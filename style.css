@@ -28,7 +28,7 @@ html, body {
     height: calc(100% - 200px);
     top: 50px;
     position: absolute;
-    overflow: scroll;
+    overflow: auto;
     cursor: zoom-in;
 }
 
