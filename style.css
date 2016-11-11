@@ -44,3 +44,7 @@ html, body {
     height: 150px;
     background: gray;
 }
+
+#timeline canvas {
+	width: 100%;
+} 
