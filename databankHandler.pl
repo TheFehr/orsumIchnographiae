@@ -6,7 +6,7 @@ use strict;
 package DatabaseHandler;
 sub new
 {
-  
+
 
 
 }
