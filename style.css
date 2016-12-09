@@ -32,6 +32,10 @@ html, body {
     cursor: zoom-in;
 }
 
+#map::-webkit-scrollbars {
+	display: none;
+}
+
 #map img {
     height: 100%;
 }

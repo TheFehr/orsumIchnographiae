@@ -6,11 +6,11 @@ use diagnostics;
 use CGI;
 use JSON;
 
-print "Content-Type: text/html\n\n";
+print "Content-Type: text/json\n\n";
 
 sub selectEvents {
 	my $db = shift;
-	my $stmt = $db->prepare('SELECT * FROM events');
+	my $stmt = $db->prepare("SELECT events.ID as 'id', events.content as 'content', events.title as 'title', ort.name as 'ort', ort.x as 'x', ort.y as 'y', bewegung.ID as 'bewegung', monat.monat as 'monat', (SELECT jahre.jahr FROM jahre WHERE jahre.ID=monat.jahrIDFS) as 'jahr' FROM `events` JOIN ort ON ort.ID = events.ortIDFS JOIN bewegung ON bewegung.ID = events.bewegungIDFS JOIN monat ON monat.ID = events.monatIDFS");
 	$stmt->execute() or die $stmt->err_str;
 	
 	return $stmt;
@@ -22,25 +22,24 @@ my $db = DBI->connect("DBI:mysql:database=$db_name", $db_user, $db_pass);
 
 $statement = selectEvents($db);
 
-print "<html><head></head><body>";
-
-my $json_obj = new JSON;
-
-## Build some Perl data
-my %perl_data;
-my @friends1 = qw[Shabbir Anjan Sajal Navin];
-my @friends2 = qw[Sanket Taneesha Sreekutty];
-
-$perl_data{Pradeep} = { locale => 'en_IN', friends => \@friends1 };
-$perl_data{Anjali} = { locale => 'en_IN', friends => \@friends2 };
-
-print $json_obj->pretty->encode(\%perl_data);
-
-while (my ($col_1, $col_2, $col_3, $col_4) = $statement->fetchrow_array() ) {
-    print "<ul><li>Spalte 1: $col_1 \n</li>";
-    print "<li>Spalte 2: $col_2 \n</li>";
-    print "<li>Spalte 3: $col_3 \n</li>";
-    print "<li>Spalte 4: $col_4 \n</li></ul>";
+my %databaseData;
+while (my ($id, $content, $title, $ort, $x, $y, $bewegung, $monat, $jahr) = $statement->fetchrow_array() ) {
+	my %event = (
+		"id" => $id,
+		"content" => $content,
+		"title" => $title,
+		"ort" => $ort,
+		"position" => [$x, $y],
+		"monat" => $monat,
+		"jahr" => $jahr
+	);
+	
+	if (exists $databaseData{$bewegung}) {
+		push($databaseData{$bewegung}, \%event);
+	} else {
+		$databaseData{$bewegung} = [\%event];
+	}
 }
 
-print "</body></html>";
+my $json = new JSON;
+print $json->pretty->encode(\%databaseData);
