@@ -10,7 +10,7 @@ print "Content-Type: text/json\n\n";
 
 sub selectEvents {
 	my $db = shift;
-	my $stmt = $db->prepare("SELECT events.ID as 'id', events.content as 'content', events.title as 'title', ort.name as 'ort', ort.x as 'x', ort.y as 'y', bewegung.ID as 'bewegung', monat.monat as 'monat', (SELECT jahre.jahr FROM jahre WHERE jahre.ID=monat.jahrIDFS) as 'jahr' FROM `events` JOIN ort ON ort.ID = events.ortIDFS JOIN bewegung ON bewegung.ID = events.bewegungIDFS JOIN monat ON monat.ID = events.monatIDFS");
+	my $stmt = $db->prepare("SELECT events.ID as 'id', events.content as 'content', events.title as 'title', ort.name as 'ort', ort.breiten as 'breiten', ort.laengen as 'laengen', bewegung.ID as 'bewegung', monat.monat as 'monat', (SELECT jahre.jahr FROM jahre WHERE jahre.ID=monat.jahrIDFS) as 'jahr' FROM `events` JOIN ort ON ort.ID = events.ortIDFS JOIN bewegung ON bewegung.ID = events.bewegungIDFS JOIN monat ON monat.ID = events.monatIDFS");
 	$stmt->execute() or die $stmt->err_str;
 	
 	return $stmt;
@@ -23,13 +23,13 @@ my $db = DBI->connect("DBI:mysql:database=$db_name", $db_user, $db_pass);
 $statement = selectEvents($db);
 
 my %databaseData;
-while (my ($id, $content, $title, $ort, $x, $y, $bewegung, $monat, $jahr) = $statement->fetchrow_array() ) {
+while (my ($id, $content, $title, $ort, $breiten, $laengen, $bewegung, $monat, $jahr) = $statement->fetchrow_array() ) {
 	my %event = (
 		"id" => $id,
 		"content" => $content,
 		"title" => $title,
 		"ort" => $ort,
-		"position" => [$x, $y],
+		"position" => [$breiten, $laengen],
 		"monat" => $monat,
 		"jahr" => $jahr
 	);
