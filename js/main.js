@@ -2,6 +2,8 @@
     "use strict";
 
 	var movements = [];
+	var gMap = null;
+	var openedInfoWindow = null;
     window.map = null;
     window.timeline = null;
 
@@ -9,16 +11,17 @@
 	    window.timeline = {
 		    canvas: document.getElementById("timeRender"),
 		    ctx: document.getElementById("timeRender").getContext("2d"),
-		    padding: 5,
+		    padding: 10,
 		    contentPadding: 30,
 		    arrowWidth: 20,
 			arrowHeight: 10,
 		    _years: {},
 		    _hoveredYear: -1,
 		    _selectedYear: -1,
+		    _activeMarkers: [],
 
 		    render: function() {			
-			    var midHeight = timeline.canvas.height / 2.0;
+			    var midHeight = timeline.canvas.height / 2.0 + 10;
 			    var arrowWidth = timeline.arrowWidth;
 			    var arrowHeight = timeline.arrowHeight;
 			    
@@ -80,7 +83,7 @@
 
 		    resize: function() {
 			    timeline.canvas.width = window.innerWidth;
-			    timeline.canvas.height = 150;
+			    timeline.canvas.height = 100;
 
 			    timeline.render();
 		    }, 
@@ -105,6 +108,53 @@
 			    if (years[timeline._hoveredYear + parseInt(years.get(0))]) {
 				    timeline._selectedYear = timeline._hoveredYear;
 				    timeline.render();
+				    
+				    for (var j in timeline._activeMarkers) {
+	            		var marker = timeline._activeMarkers[j];
+	            		marker.setMap(null);
+            		}
+            		
+            		timeline._activeMarkers = [];
+				    
+				    var year = timeline._years[timeline._years.get(timeline._selectedYear)];
+				    for (var i in year) {
+					    var event = year[i];
+					    
+						var contentString = '<div id="content">'+
+							'<div id="siteNotice">'+
+							'<p>' + event.ort + '</p>' +
+							'</div>'+
+							'<h1 id="firstHeading" class="firstHeading">'+ event.title +'</h1>'+
+							'<div id="bodyContent">'+
+							'<p>'+ event.content +'</p>'+
+							'</div>'+
+							'</div>';
+      						
+						var infowindow = new google.maps.InfoWindow({
+							content: contentString
+						});
+  						
+
+					    var marker = new google.maps.Marker({
+            			    position: new google.maps.LatLng(event.position[0], event.position[1]), 
+            			    map: gMap, 
+            			    title: event.title
+            			});
+            			
+            			marker.addListener('click', (function(marker, infowindow) {
+	            			return function() {
+		            			if (openedInfoWindow) {
+			            			openedInfoWindow.close();
+		            			}
+		            			
+								infowindow.open(gMap, marker);
+								gMap.panTo(marker.getPosition());
+								openedInfoWindow = infowindow;
+							};
+            			})(marker, infowindow));
+            			
+            			timeline._activeMarkers.push(marker);
+				    }
 			    }
 		    }
 	    };
@@ -171,12 +221,20 @@
 			
 			window.onresize = timeline.resize;
 			
-			map.html.addEventListener("click", function(e) {
+			var myOptions = {
+                zoom: 2,
+                center: new google.maps.LatLng(0.0, 0.0),
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                disableDefaultUI: true
+            };
+            gMap = new google.maps.Map(document.getElementById("map"), myOptions);
+			
+			/*map.html.addEventListener("click", function(e) {
 			    if (!map.zoomedIn)
 			        map.zoomMapIn(e);
 			    else
 			        map.zoomMapOut();
-			});
+			});*/
 			
 			timeline.canvas.addEventListener("mousemove", function(e) {
 				timeline.mouseMove(e);

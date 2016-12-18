@@ -25,7 +25,7 @@ html, body {
 #map {
     background: white;
     width: 100%;
-    height: calc(100% - 200px);
+    height: calc(100% - 50px);
     top: 50px;
     position: absolute;
     overflow: auto;
@@ -45,8 +45,15 @@ html, body {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 150px;
-    background: gray;
+    height: 100px;
+    background: rgba(191, 191, 191, 0.9);
+}
+
+@supports (-webkit-backdrop-filter: blur(1px)) {
+	#timeline {
+		-webkit-backdrop-filter: blur(7px);
+		background: rgba(191, 191, 191, 0.68);
+	}
 }
 
 #timeline canvas {

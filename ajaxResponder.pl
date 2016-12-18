@@ -6,7 +6,7 @@ use diagnostics;
 use CGI;
 use JSON;
 
-print "Content-Type: text/json\n\n";
+print "Content-Type: text/json; charset=utf-8\n\n";
 
 sub selectEvents {
 	my $db = shift;
