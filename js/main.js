@@ -102,11 +102,17 @@
 			    timeline.render();
 		    },
 		    
+		    mouseLeave: function(e) {
+			    timeline._hoveredYear = -1;
+			    timeline.render();
+		    },
+		    
 		    click: function(e) {
 			    var years = timeline._years;
 			    
 			    if (years[timeline._hoveredYear + parseInt(years.get(0))]) {
 				    timeline._selectedYear = timeline._hoveredYear;
+				    timeline._hoveredYear = -1;
 				    timeline.render();
 				    
 				    for (var j in timeline._activeMarkers) {
@@ -284,6 +290,10 @@
 			timeline.canvas.addEventListener("mouseup", function(e) {
 				timeline.click(e);
 			});
+			
+			timeline.canvas.addEventListener("mouseleave", function(e) {
+				timeline.mouseLeave(e);
+			})
 			
 			document.getElementById("magnifyMap").addEventListener("click", function(e) {
 				zoomMap(true);
