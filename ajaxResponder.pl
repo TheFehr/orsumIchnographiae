@@ -5,8 +5,9 @@ use DBI;
 use diagnostics;
 use CGI;
 use JSON;
+use Encode qw(decode_utf8 encode_utf8);
 
-print "Content-Type: text/json; charset=utf-8\n\n";
+print "Content-Type: application/json; charset=utf-8\n\n";
 
 sub selectEvents {
 	my $db = shift;
@@ -18,7 +19,7 @@ sub selectEvents {
 
 
 my ($db_user, $db_name, $db_pass) = ('3i', 'orsumIchnographiae', 'wurst');
-my $db = DBI->connect("DBI:mysql:database=$db_name", $db_user, $db_pass);
+my $db = DBI->connect("DBI:mysql:database=$db_name", $db_user, $db_pass, {RaiseError => 0, PrintError => 0, mysql_enable_utf8 => 1});
 
 $statement = selectEvents($db);
 
@@ -26,9 +27,9 @@ my %databaseData;
 while (my ($id, $content, $title, $ort, $breiten, $laengen, $bewegung, $monat, $jahr) = $statement->fetchrow_array() ) {
 	my %event = (
 		"id" => $id,
-		"content" => $content,
-		"title" => $title,
-		"ort" => $ort,
+		"content" => encode_utf8($content),
+		"title" => encode_utf8($title),
+		"ort" => encode_utf8($ort),
 		"position" => [$breiten, $laengen],
 		"monat" => $monat,
 		"jahr" => $jahr

@@ -116,7 +116,7 @@
             		
             		timeline._activeMarkers = [];
 				    
-				    var year = timeline._years[timeline._years.get(timeline._selectedYear)];
+				    var year = timeline._years[parseInt(timeline._years.get(0)) + timeline._selectedYear];
 				    for (var i in year) {
 					    var event = year[i];
 					    
@@ -198,6 +198,24 @@
 	    }
 	    
 	    years.length = len;
+	    
+	    years.getWithDeltaFromFirstYear = function(i) {
+		    var start = true;
+		    var lastYear = 0;
+		    for (var year in this) {
+			    year = parseInt(year);
+			    if (start == true) {
+				    lastYear = year;
+				    start = false;
+			    }
+			    
+			    if ((year - lastYear) == i) {
+				    return year;
+			    }
+			    
+			    lastYear = year;
+		    }
+	    };
 	    
 	    years.get = function(i) {
 		    var j = 0;
