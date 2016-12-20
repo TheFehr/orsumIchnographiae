@@ -210,6 +210,28 @@
 	    
 	    return years;
     }
+    
+    function zoomMap(zoomIn) {
+	    if (zoomIn) {
+		    gMap.setZoom(Math.min(Math.max(gMap.zoom + 1, 0), 21));
+	    } else {
+		    gMap.setZoom(Math.min(Math.max(gMap.zoom - 1, 0), 21));
+	    }
+    }
+    
+    function updateCoordsLabel() {
+	    var coords = gMap.getCenter();
+		var lat = coords.lat();
+		var lng = coords.lng();
+		
+		var fullLat = Math.floor(lat);
+		var latSeconds = ((lat - fullLat) * 60).toFixed(1);
+		
+		var fullLng = Math.floor(lng);
+		var lngSeconds = ((lng - fullLng) * 60).toFixed(1);
+		
+		document.getElementById("coords").innerHTML = fullLat + "° " + latSeconds + "'  N | " + fullLng + "° " + lngSeconds + "' W";
+    }
 
     window.addEventListener("load", function(loadEvent) {
         loadEventData(function() {
@@ -222,12 +244,13 @@
 			window.onresize = timeline.resize;
 			
 			var myOptions = {
-                zoom: 2,
-                center: new google.maps.LatLng(0.0, 0.0),
+                zoom: 4,
+                center: new google.maps.LatLng(50.0, 9.9),
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 disableDefaultUI: true
             };
             gMap = new google.maps.Map(document.getElementById("map"), myOptions);
+            window.gMap = gMap;
 			
 			/*map.html.addEventListener("click", function(e) {
 			    if (!map.zoomedIn)
@@ -243,6 +266,21 @@
 			timeline.canvas.addEventListener("mouseup", function(e) {
 				timeline.click(e);
 			});
+			
+			document.getElementById("magnifyMap").addEventListener("click", function(e) {
+				zoomMap(true);
+			});
+			
+			document.getElementById("minifyMap").addEventListener("click", function(e) {
+				zoomMap(false);
+			});
+			
+			gMap.addListener("drag", function(e) {
+				updateCoordsLabel();
+			});
+			
+			
+			updateCoordsLabel();
         });
     });
 })();

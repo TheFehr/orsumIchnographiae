@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html manifest="manifest.manifest">
+<html>
     <head>
         <title>Orsum Ichnographiae</title>
         <link rel="stylesheet" href="style.css" />
@@ -14,7 +14,16 @@
     </head>
     <body>
         <div id="header">
-            <h3>Orsum Ichnographiae</h3>
+            <h3>Orsum Ichnographiae – Die interaktive Weltkarte des 2. Weltkrieges</h3>
+            <div id="controls">
+	            <div class="controlElement" id="minifyMap">
+		            -
+	            </div>
+	            <div class="controlElement" id="magnifyMap">
+		            +
+	            </div>
+            </div>
+            <span id="coords">0°N | 0°W</span>
         </div>
         <div id="map">
             <!--<img style="-webkit-user-select: none; display: block; margin: auto" alt="Die Weltkarte" src="map.png" />-->
