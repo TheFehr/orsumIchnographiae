@@ -8,12 +8,16 @@ html, body {
 }
 
 #header {
-    background-color: lightgray;
+	position: absolute;
     top: 0;
     left: 0;
     margin: 0;
     width: 100%;
     height: 50px;
+    background: rgba(191, 191, 191, 0.9);
+    z-index: 1000;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.5);
+    overflow: hidden;
 }
 
 #header > h1, h2, h3, h4, h5, h6 {
@@ -66,11 +70,35 @@ html, body {
 	color: rgb(82, 82, 82);
 }
 
+#header #mapControls {
+    float: right;
+    margin-right: 20px;
+    margin-top: 10px;
+}
+
+#header #mapControls img {
+    -webkit-transition: 0.1s all;
+}
+
+#header #mapControls img.active {
+    -webkit-transform: scale(1.2);
+    -moz-transform: scale(1.2);
+    transform: scale(1.2);
+}
+
+#header #mapControls img.inactive {
+    opacity: 0.45;
+}
+
+#header #mapControls img:hover {
+    opacity: 1;
+}
+
 #map {
     background: white;
     width: 100%;
-    height: calc(100% - 50px);
-    top: 50px;
+    height: 100%;
+    top: 0px;
     position: absolute;
     overflow: auto;
     cursor: zoom-in;
@@ -91,15 +119,108 @@ html, body {
     width: 100%;
     height: 100px;
     background: rgba(191, 191, 191, 0.9);
+    border-top: 1px solid rgba(128, 128, 128, 0.5);
+}
+
+#timeline canvas {
+	display: block;
+}
+
+#eventsList {
+	position: absolute;
+	top: 51px;
+	width: 300px;
+	left: -254px;
+	height: calc(100% - 152px);
+	overflow-y: scroll;
+	background: rgba(191, 191, 191, 0.9);
+	z-index: 100;
+	-webkit-transition: 0.4s all;
+	transition: 0.4s all;
+}
+
+#eventsList:hover {
+	left: 0px;
+}
+
+#eventsList ul {
+	list-style: none;
+	padding-right: 46px;
+	text-shadow: 0px 0px 5px white;
+}
+
+#eventsList ul li {
+	margin-bottom: 20px;
+	cursor: pointer;
+}
+
+#eventsList #label {
+	-webkit-transform: rotate(90deg);
+	position: absolute;
+	right: -16px;
+	top: 50%;
+	color: rgb(82, 82, 82);
+}
+
+#eventsList h3 {
+	color: rgba(72, 72, 72, 0.8);
+	margin-top: 20px;
+	text-shadow: none;
+}
+
+#eventsList::-webkit-scrollbar-track {
+	background-color: rgba(97, 97, 97, 0.2);
+}
+
+#eventsList::-webkit-scrollbar {
+	width: 6px;
+	background-color: rgba(0,0,0,0);
+}
+
+#eventsList::-webkit-scrollbar-thumb {
+	background-color: rgba(98, 98, 98, 0.0);
+}
+
+#eventsList:hover::-webkit-scrollbar-thumb {
+	background-color: rgba(98, 98, 98, 0.47);
 }
 
 @supports (-webkit-backdrop-filter: blur(1px)) {
-	#timeline {
+	#timeline, #eventsList, #header {
 		-webkit-backdrop-filter: blur(7px);
 		background: rgba(191, 191, 191, 0.68);
 	}
 }
 
-#timeline canvas {
-	display: block;
-} 
+body.dark {
+	color: white;
+}
+
+body.dark #eventsList ul {
+	text-shadow: 0px 0px 5px rgb(32, 32, 32);
+	color: white;
+}
+
+body.dark #eventsList #label, body.dark #header #coords, body.dark #header #controls div {
+	color: rgb(205, 205, 205);
+}
+
+body.dark #header #controls, body.dark #header #controls .controlElement:last-child {
+	border-color: rgba(225, 225, 225, 1);
+}
+
+body.dark #header #controls .controlElement:hover {
+	background-color: rgba(255, 255, 255, 0.19);
+	color: rgba(220, 220, 220, 1);
+}
+
+body.dark #timeline {
+	background: rgba(132, 132, 132, 0.9);
+}
+
+@supports (-webkit-backdrop-filter: blur(1px)) {
+	body.dark #timeline, body.dark #eventsList, body.dark #header {
+		-webkit-backdrop-filter: blur(7px);
+		background: rgba(132, 132, 132, 0.68);
+	}
+}
