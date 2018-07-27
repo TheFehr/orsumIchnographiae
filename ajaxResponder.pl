@@ -36,7 +36,7 @@ while (my ($id, $content, $title, $ort, $breiten, $laengen, $bewegung, $monat, $
 	);
 	
 	if (exists $databaseData{$bewegung}) {
-		push($databaseData{$bewegung}, \%event);
+		push(@{ $databaseData{$bewegung} }, \%event);
 	} else {
 		$databaseData{$bewegung} = [\%event];
 	}
